@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { setUserData } from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
