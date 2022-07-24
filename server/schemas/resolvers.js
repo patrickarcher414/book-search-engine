@@ -17,23 +17,44 @@ const resolvers = {
       const {email, password} = args
       let user = await User.findOne({email})
       if (!user) {
-        throw new AuthenticationError("Please enter valid email.")
+        throw new AuthenticationError("Please enter a valid email.")
       }
       let correctPW = await user.isCorrectPassword(password)
       if (!correctPW) {
-        throw new AuthenticationError("Please enter a valid password!")
+        throw new AuthenticationError("Please enter a valid password.")
       }
       const token = signToken(user)
       return { token, user }
     },
+
     addUser: async (parent, args) => {
-      
+      const newUser = await User.create(args)
+      const token = signToken(newUser)
+      return { token, newUser}
     },
-    saveBook: async (parent, args, context) => {
-      
+
+    saveBook: async (parent, {bookData}, context) => {
+      if (context.user) {
+        const updateUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $push: { savedBooks: bookData } },
+          { new: true }
+        );
+        return updateUser;
+      }
+      throw new AuthenticationError('Please login to save books!');
     },
-    removeBook: async (parent, args, context) => {
-      
+
+    removeBook: async (parent, {bookId}, context) => {
+      if (context.user) {
+        const updateUser = await User.findByIdAndUpdate(
+          { _id: context.user._id },
+          { $pull: { savedBooks: bookId } },
+          { new: true }
+        );
+        return updateUser;
+      }
+      throw new AuthenticationError('Please login to remove books!');
     }
   }
 };
