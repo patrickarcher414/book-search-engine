@@ -33,11 +33,11 @@ const resolvers = {
       return { token, newUser}
     },
 
-    saveBook: async (parent, {bookData}, context) => {
+    saveBook: async (parent, args, context) => {
       if (context.user) {
         const updateUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $push: { savedBooks: bookData } },
+          { $push: { savedBooks: args } },
           { new: true }
         );
         return updateUser;
@@ -45,11 +45,11 @@ const resolvers = {
       throw new AuthenticationError('Please login to save books!');
     },
 
-    removeBook: async (parent, {bookId}, context) => {
+    removeBook: async (parent, args, context) => {
       if (context.user) {
         const updateUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: bookId } },
+          { $pull: { savedBooks: args } },
           { new: true }
         );
         return updateUser;
