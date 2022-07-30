@@ -9,7 +9,7 @@ import { QUERY_ME } from "../utils/queries";
 const SavedBooks = () => {
  
   const [removeBook] = useMutation(REMOVE_BOOK)
-  const {userDataLength, data} = useQuery(QUERY_ME)
+  const {data, loading, error} = useQuery(QUERY_ME)
   
   const userData = data?.me || {}
  
@@ -36,7 +36,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
